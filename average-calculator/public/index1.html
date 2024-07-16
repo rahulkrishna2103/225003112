@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Average Calculator Microservice</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Average Calculator Microservice</h1>
+        <div id="response-container">
+            <!-- Response will be dynamically filled here -->
+        </div>
+        <form id="fetchForm">
+            <label for="numberid">Enter Number ID (p, f, e, r):</label>
+            <input type="text" id="numberid" name="numberid" required>
+            <button type="submit">Fetch Numbers</button>
+        </form>
+    </div>
+
+    <script>
+        // JavaScript can be included here for additional functionality if needed
+        document.getElementById('fetchForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const numberid = document.getElementById('numberid').value;
+            const url = `http://localhost:9876/numbers/${numberid}`;
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                displayResponse(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        });
+
+        function displayResponse(data) {
+            const responseContainer = document.getElementById('response-container');
+            responseContainer.innerHTML = `
+                <h2>Previous Window State:</h2>
+                <p>${data.windowPrevState.join(', ')}</p>
+                <h2>Current Window State:</h2>
+                <p>${data.windowCurrState.join(', ')}</p>
+                <h2>Numbers:</h2>
+                <p>${data.numbers.join(', ')}</p>
+                <h2>Average:</h2>
+                <p>${data.avg.toFixed(2)}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
